@@ -99,11 +99,11 @@ if st.button("Predict"):
      X_train = fill_values.fit_transform(X_train)
      X_test = fill_values.fit_transform(X_test)
 
-     random_forest_model = RandomForestClassifier(random_state=10)
+     random_forest_model = RandomForestClassifier(random_state=100)
 
      model = random_forest_model.fit(X_train, y_train)
 
-     predict_train_data = model.predict(X_test)
+     # predict_train_data = model.predict(X_test)
 
      # st.code("Accuracy = {0:.3f}".format(metrics.accuracy_score(y_test, predict_train_data)))
      # st.code(X_test)
@@ -123,9 +123,11 @@ if st.button("Predict"):
 
 else:
      st.text("Click Predict")
-# st.header("Dataset Description")
-# st.markdown('This data set dates from 1988 and consists of four databases: Cleveland, Hungary, Switzerland, and Long Beach V. It contains 76 attributes, including the predicted attribute, but all published experiments refer to using a subset of 14 of them. The "target" field refers to the presence of heart disease in the patient. It is integer valued 0 = no disease and 1 = disease.')
-# st.dataframe(dataset)
+
+dataset =pd.read_csv('heart.csv')
+st.header("Dataset Description")
+st.markdown('This data set dates from 1988 and consists of four databases: Cleveland, Hungary, Switzerland, and Long Beach V. It contains 76 attributes, including the predicted attribute, but all published experiments refer to using a subset of 14 of them. The "target" field refers to the presence of heart disease in the patient. It is integer valued 0 = no disease and 1 = disease.')
+st.dataframe(dataset)
 
 # rcParams['figure.figsize'] = 20, 14
 # plt.matshow(dataset.corr())
@@ -138,15 +140,15 @@ else:
 # user_data =pd.DataFrame()
 
 # # Data Processing
-# dataset = pd.get_dummies(dataset, columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal'])
-# standardScaler = StandardScaler()
-# columns_to_scale = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak']
-# dataset[columns_to_scale] = standardScaler.fit_transform(dataset[columns_to_scale])
+dataset = pd.get_dummies(dataset, columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal'])
+standardScaler = StandardScaler()
+columns_to_scale = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak']
+dataset[columns_to_scale] = standardScaler.fit_transform(dataset[columns_to_scale])
 
-# y = dataset['target']
-# # st.dataframe(y)
-# X = dataset.drop(['target'], axis = 1)
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.33, random_state = 0)
+y = dataset['target']
+# st.dataframe(y)
+X = dataset.drop(['target'], axis = 1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.33, random_state = 0)
 # st.dataframe(X_train    )
 # user_data = user_data.append(X_test.tail(1))
 # st.dataframe(user_data)
@@ -260,24 +262,24 @@ else:
 
 # #Random Forest Classifier
 
-# st.header("Random Forest Classifier")
+st.header("Random Forest Classifier")
 
-# rf_scores = []
-# estimators = [10, 100, 200, 500, 1000]
-# for i in estimators:
-#     rf_classifier = RandomForestClassifier(n_estimators = i, random_state = 0)
-#     rf_classifier.fit(X_train, y_train)
-#     rf_scores.append(rf_classifier.score(X_test, y_test))
+rf_scores = []
+estimators = [10, 100, 200, 500, 1000]
+for i in estimators:
+    rf_classifier = RandomForestClassifier(n_estimators = i, random_state = 0)
+    rf_classifier.fit(X_train, y_train)
+    rf_scores.append(rf_classifier.score(X_test, y_test))
 
-# st.markdown("The score for Random Forest Classifier is {}% with {} estimators.".format(round(rf_scores[1]*100,2), [100, 500]))
+st.markdown("The score for Random Forest Classifier is {}% with {} estimators.".format(round(rf_scores[1]*100,2), [100, 500]))
 
-# colors = rainbow(np.linspace(0, 1, len(estimators)))
-# plt.bar([i for i in range(len(estimators))], rf_scores, color = colors, width = 0.8)
-# for i in range(len(estimators)):
-#     plt.text(i, rf_scores[i], round(rf_scores[i],2))
-# plt.xticks(ticks = [i for i in range(len(estimators))], labels = [str(estimator) for estimator in estimators])
-# plt.xlabel('Number of estimators')
-# plt.ylabel('Scores')
-# plt.title('Random Forest Classifier scores for different number of estimators')
+colors = rainbow(np.linspace(0, 1, len(estimators)))
+plt.bar([i for i in range(len(estimators))], rf_scores, color = colors, width = 0.8)
+for i in range(len(estimators)):
+    plt.text(i, rf_scores[i], round(rf_scores[i],2))
+plt.xticks(ticks = [i for i in range(len(estimators))], labels = [str(estimator) for estimator in estimators])
+plt.xlabel('Number of estimators')
+plt.ylabel('Scores')
+plt.title('Random Forest Classifier scores for different number of estimators')
 
-# st.pyplot(plt,True)
+st.pyplot(plt,True)
